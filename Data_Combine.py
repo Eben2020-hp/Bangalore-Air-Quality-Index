@@ -13,11 +13,10 @@ import os
 import csv
 from bs4 import BeautifulSoup
 
-
 ## Web-scrap each file
 def met_data(month, year):
     
-    file_html = open('Data/Html_Data/{}/{}.html'.format(2013,1), 'rb')
+    file_html = open('Data/Html_Data/{}/{}.html'.format(year,month), 'rb')
     plain_text = file_html.read()
 
     tempD = []
@@ -30,7 +29,7 @@ def met_data(month, year):
                 a = tr.get_text()
                 tempD.append(a)
 
-    rows = len(tempD) / 15
+    rows = len(tempD)/15
 
     for times in range(round(rows)):
         newtempD = []
@@ -57,7 +56,7 @@ def met_data(month, year):
     return finalD
 
 def data_combine(year, cs):
-    for a in pd.read_csv('Data/Real-Data/real_' + str(year) + '.csv', chunksize=cs):
+    for a in pd.read_csv('Data/Real-Data/real_' + str(year) + '.csv', chunksize= cs):
         df = pd.DataFrame(data=a)
         mylist = df.values.tolist()
     return mylist
@@ -78,12 +77,10 @@ if __name__ == "__main__":
             
         pm = getattr(sys.modules[__name__], 'avg_date_{}'.format(year))()
 
-        if len(pm) == 364:
-            pm.insert(364, '-')
 
         for i in range(len(final_data)-1):
             # final[i].insert(0, i + 1)
-            final_data[i].insert(0, i + 1)
+            final_data[i].insert(7, pm[i])
 
         with open('Data/Real-Data/real_' + str(year) + '.csv', 'a') as csvfile:
             wr = csv.writer(csvfile, dialect='excel')
